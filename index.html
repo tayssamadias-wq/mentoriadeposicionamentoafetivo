@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicação - Mentoria de Posicionamento Afetivo</title>
+    <!-- Fontes de alto padrão: Cormorant Garamond para títulos e Montserrat para textos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FAF8F5; /* Off-white refinado */
+            --text-main: #1A1A1A;
+            --text-muted: #5A5A5A;
+            --accent: #2C2C2C;
+            --accent-hover: #000000;
+            --border-color: #D1CDDA;
+            --error-color: #9D4343;
+            --transition-speed: 0.5s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Mantém a tela fixa como Typeform */
+        }
+
+        /* Barra de Progresso */
+        #progress-container {
+            width: 100%;
+            height: 4px;
+            background-color: rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent);
+            transition: width var(--transition-speed) ease;
+        }
+
+        /* Container do Formulário */
+        .form-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .step {
+            display: none;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+        }
+
+        .step.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1, h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 2rem;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        /* Inputs e Textareas */
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(0,0,0,0.2);
+            font-size: 1.5rem;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-main);
+            padding: 10px 0;
+            margin-bottom: 2rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(0,0,0,0.2);
+        }
+
+        /* Radio Buttons (Estilo Typeform) */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: rgba(255,255,255,0.6);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+        }
+
+        .radio-option:hover {
+            background-color: rgba(0,0,0,0.02);
+            border-color: rgba(0,0,0,0.3);
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option.selected {
+            background-color: rgba(0,0,0,0.05);
+            border-color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Escala 1 a 10 */
+        .scale-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .scale-option {
+            flex: 1;
+            min-width: 45px;
+            text-align: center;
+            padding: 15px 0;
+            background-color: rgba(255,255,255,0.6);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+        }
+        
+        .scale-option:hover {
+            background-color: rgba(0,0,0,0.02);
+            border-color: rgba(0,0,0,0.3);
+        }
+
+        .scale-option.selected {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            font-weight: 500;
+        }
+
+        .scale-option input[type="radio"] {
+            display: none;
+        }
+
+        /* Botões */
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        button {
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-top: -1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-left: 15px;
+            opacity: 0.7;
+        }
+
+        /* Media Queries */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            input[type="text"], input[type="tel"], textarea { font-size: 1.2rem; }
+            .scale-option { min-width: 35px; padding: 10px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <div class="form-container">
+        <form id="applicationForm">
+            <!-- Web3Forms Config -->
+            <input type="hidden" name="access_key" value="3a1eabeb-0d6c-4260-8889-9b5460dd01d5">
+            <input type="hidden" name="subject" value="Nova Aplicação: Mentoria de Posicionamento Afetivo">
+            <input type="hidden" name="from_name" value="Mentoria Premium">
+
+            <!-- Step 0: Intro -->
+            <div class="step active" id="step-0">
+                <h1>Mentoria de Posicionamento Afetivo</h1>
+                <p class="subtitle">Este espaço é reservado para mulheres que decidiram encerrar o ciclo do amadorismo emocional e assumir o controle de suas escolhas emocionais e padrões de valor.<br><br><i>Informamos que o preenchimento não garante vaga; passará por uma análise rigorosa de perfil.</i></p>
+                <button type="button" class="btn-primary" onclick="nextStep()">Iniciar Aplicação</button>
+                <span class="hint">Pressione Enter ↵</span>
+            </div>
+
+            <!-- Step 1: Nome -->
+            <div class="step" id="step-1">
+                <h2><span class="question-number">1 &rarr;</span> Qual é o seu nome completo?</h2>
+                <input type="text" name="Nome" placeholder="Digite seu nome completo" required>
+                <div class="error-message">Por favor, preencha este campo.</div>
+                <div class="btn-container">
+                    <button type="button" class="btn-primary" onclick="nextStep()">Continuar</button>
+                    <span class="hint">Pressione Enter ↵</span>
+                </div>
+            </div>
+
+            <!-- Step 2: WhatsApp -->
+            <div class="step" id="step-2">
+                <h2><span class="question-number">2 &rarr;</span> Qual é o seu WhatsApp para contato?</h2>
+                <p class="subtitle">Nossa equipe entrará em contato por este número em caso de aprovação.</p>
+                <input type="tel" name="WhatsApp" placeholder="(00) 00000-0000" required>
+                <div class="error-message">Por favor, insira um número válido.</div>
+                <div class="btn-container">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Voltar</button>
+                    <button type="button" class="btn-primary" onclick="nextStep()">Continuar</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Gargalo -->
+            <div class="step" id="step-3">
+                <h2><span class="question-number">3 &rarr;</span> Qual é o seu principal gargalo atual na sua vida amorosa ou nas suas relações?</h2>
+                <div class="options-container" data-name="Principal_Gargalo">
+                    <label class="radio-option">
+                        <input type="radio" name="Principal_Gargalo" value="Repetição de padrões com parceiros emocionalmente indisponíveis." required>
+                        Repetição de padrões com parceiros emocionalmente indisponíveis.
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="Principal_Gargalo" value="Dificuldade de me posicionar e ser priorizada (acabo aceitando pouco).">
+                        Dificuldade de me posicionar e ser priorizada (acabo aceitando pouco).
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="Principal_Gargalo" value="Insegurança e ansiedade quando começo a me envolver com alguém.">
+                        Insegurança e ansiedade quando começo a me envolver com alguém.
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="Principal_Gargalo" value="Saindo de um término complexo e sem saber reconstruir meu padrão.">
+                        Saindo de um término complexo e sem saber reconstruir meu padrão.
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="Principal_Gargalo" value="Falta de inteligência emocional para lidar com as minhas relações pessoais e profissionais">
+                        Falta de inteligência emocional para lidar com as minhas relações pessoais e profissionais.
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="Principal_Gargalo" value="Todas as alternativas anteriores">
+                        Todas as alternativas anteriores.
+                    </label>
+                </div>
+                <div class="error-message">Por favor, selecione uma opção.</div>
+                <div class="btn-container">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Voltar</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Tentativas -->
+            <div class="step" id="step-4">
+                <h2><span class="question-number">4 &rarr;</span> O que você já tentou fazer para resolver isso até hoje e por que falhou?</h2>
+                <textarea name="Tentativas_Anteriores" placeholder="Descreva brevemente..." required></textarea>
+                <div class="error-message">Por favor, preencha este campo.</div>
+                <div class="btn-container">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Voltar</button>
+                    <button type="button" class="btn-primary" onclick="nextStep()">Continuar</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Urgência -->
+            <div class="step" id="step-5">
+                <h2><span class="question-number">5 &rarr;</span> Em uma escala de 1 a 10, qual é o seu nível de urgência e compromisso para resolver essa questão nos próximos 30 dias?</h2>
+                <div class="scale-container" data-name="Nivel_Urgencia_Compromisso">
+                    <!-- Gerando opções de 1 a 10 -->
+                    <script>
+                        for(let i=1; i<=10; i++) {
+                            document.write(`
+                                <label class="scale-option">
+                                    <input type="radio" name="Nivel_Urgencia_Compromisso" value="${i}" required>
+                                    ${i}
+                                </label>
+                            `);
+                        }
+                    </script>
+                </div>
+                <div class="error-message">Por favor, selecione uma nota.</div>
+                <div class="btn-container">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Voltar</button>
+                </div>
+            </div>
+
+            <!-- Step 6: Investimento de tempo/dinheiro -->
+            <div class="step" id="step-6">
+                <h2><span class="question-number">6 &rarr;</span> Você compreende que um processo de reestruturação de posicionamento e alto valor exige investimento financeiro e dedicação pessoal de tempo?</h2>
+                <div class="options-container" data-name="Compreensao_Investimento">
+                    <label class="radio-option">
+                        <input type="radio" name="Compreensao_Investimento" value="Sim, estou disposta para investir em mim." required>
+                        Sim, estou disposta para investir em mim.
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="Compreensao_Investimento" value="Não no momento.">
+                        Não no momento.
+                    </label>
+                </div>
+                <div class="error-message">Por favor, selecione uma opção.</div>
+                <div class="btn-container">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Voltar</button>
+                </div>
+            </div>
+
+            <!-- Step 7: Renda -->
+            <div class="step" id="step-7">
+                <h2><span class="question-number">7 &rarr;</span> Qual é a sua faixa de renda mensal atual ou capacidade de investimento para o seu desenvolvimento pessoal e estratégico?</h2>
+                <div class="options-container" data-name="Faixa_de_Renda">
+                    <label class="radio-option">
+                        <input type="radio" name="Faixa_de_Renda" value="Menos de R$ 5.000 / mês" required>
+                        Menos de R$ 5.000 / mês
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="Faixa_de_Renda" value="De R$ 5.000 a R$ 9.000 / mês">
+                        De R$ 5.000 a R$ 9.000 / mês
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="Faixa_de_Renda" value="De R$ 9.000 a R$ 15.000 / mês">
+                        De R$ 9.000 a R$ 15.000 / mês
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="Faixa_de_Renda" value="Acima de R$ 15.000 / mês">
+                        Acima de R$ 15.000 / mês
+                    </label>
+                </div>
+                <div class="error-message">Por favor, selecione uma opção.</div>
+                <div class="btn-container">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Voltar</button>
+                </div>
+            </div>
+
+            <!-- Step 8: Por que você? -->
+            <div class="step" id="step-8">
+                <h2><span class="question-number">8 &rarr;</span> Por que você acredita que deve ser aceita para ser acompanhada diretamente por mim nesta mentoria?</h2>
+                <textarea name="Motivo_Aceitacao" placeholder="Escreva sua resposta com sinceridade..." required></textarea>
+                <div class="error-message">Por favor, preencha este campo.</div>
+                <div class="btn-container">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">Voltar</button>
+                    <button type="submit" class="btn-primary" id="submitBtn">Enviar Aplicação</button>
+                </div>
+            </div>
+
+            <!-- Step 9: Sucesso -->
+            <div class="step" id="step-9">
+                <h1 style="text-align: center;">Aplicação Recebida com Sucesso.</h1>
+                <p class="subtitle" style="text-align: center;">Sua aplicação foi registrada. Nossa equipe fará a análise do seu perfil e, caso você seja selecionada para esta mentoria, entraremos em contato pelo WhatsApp informado.<br><br>Mantenha sua postura firme e aguarde nosso retorno.</p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const steps = document.querySelectorAll('.step');
+        const form = document.getElementById('applicationForm');
+        
+        function updateProgress() {
+            const totalSteps = steps.length - 2; // Ignora intro(0) e sucesso(9)
+            let progress = 0;
+            if (currentStep > 0 && currentStep < steps.length - 1) {
+                progress = ((currentStep) / totalSteps) * 100;
+            } else if (currentStep === steps.length - 1) {
+                progress = 100;
+            }
+            document.getElementById('progress-bar').style.width = progress + '%';
+        }
+
+        function showStep(stepIndex) {
+            steps.forEach((step, index) => {
+                step.classList.remove('active');
+                if (index === stepIndex) {
+                    step.classList.add('active');
+                    // Autofocus the first input in the new step
+                    const input = step.querySelector('input, textarea');
+                    if (input && input.type !== 'radio') {
+                        setTimeout(() => input.focus(), 500);
+                    }
+                }
+            });
+            updateProgress();
+        }
+
+        function validateCurrentStep() {
+            if (currentStep === 0) return true; // Intro step
+
+            const currentStepEl = steps[currentStep];
+            const inputs = currentStepEl.querySelectorAll('input[required], textarea[required]');
+            let isValid = true;
+            const errorMsg = currentStepEl.querySelector('.error-message');
+
+            inputs.forEach(input => {
+                if (input.type === 'radio') {
+                    const radios = currentStepEl.querySelectorAll(`input[name="${input.name}"]`);
+                    let radioChecked = false;
+                    radios.forEach(r => { if (r.checked) radioChecked = true; });
+                    if (!radioChecked) isValid = false;
+                } else {
+                    if (!input.value.trim()) isValid = false;
+                }
+            });
+
+            if (!isValid && errorMsg) {
+                errorMsg.style.display = 'block';
+                // Efeito visual de erro
+                currentStepEl.style.transform = 'translateX(10px)';
+                setTimeout(() => currentStepEl.style.transform = 'translateX(-10px)', 100);
+                setTimeout(() => currentStepEl.style.transform = 'translateX(0)', 200);
+            } else if (errorMsg) {
+                errorMsg.style.display = 'none';
+            }
+
+            return isValid;
+        }
+
+        function nextStep() {
+            if (validateCurrentStep()) {
+                if (currentStep < steps.length - 2) { // Não avança manualmente para o sucesso
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        // Lógica de seleção visual para Radio Buttons e avanço automático
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remover classe 'selected' de todos os labels no mesmo step
+                const name = this.name;
+                const parentStep = this.closest('.step');
+                parentStep.querySelectorAll('label').forEach(label => {
+                    label.classList.remove('selected');
+                });
+                // Adicionar classe 'selected' ao label selecionado
+                this.closest('label').classList.add('selected');
+                
+                // Ocultar mensagem de erro, se existir
+                const errorMsg = parentStep.querySelector('.error-message');
+                if (errorMsg) errorMsg.style.display = 'none';
+
+                // Avançar automaticamente após 450ms
+                setTimeout(() => {
+                    nextStep();
+                }, 450);
+            });
+        });
+
+        // Suporte a tecla Enter para avançar
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const activeStep = document.querySelector('.step.active');
+                const activeTag = document.activeElement.tagName.toLowerCase();
+                
+                // Evita que o Enter quebre linha no textarea (permite shift+enter ou enter normal dependendo da preferência, mas aqui travamos para avançar apenas em inputs normais)
+                if (activeTag === 'textarea') {
+                    return; // Deixa o Enter funcionar normalmente na textarea
+                }
+                
+                event.preventDefault();
+                if (currentStep === steps.length - 2) {
+                    // Penúltimo step (Q8), submete formulário se validar
+                    if (validateCurrentStep()) {
+                        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                    }
+                } else {
+                    nextStep();
+                }
+            }
+        });
+
+        // Envio do formulário via AJAX para o Web3Forms
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if(!validateCurrentStep()) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(form);
+            const object = Object.fromEntries(formData);
+            const json = JSON.stringify(object);
+
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: json
+            })
+            .then(async (response) => {
+                let json = await response.json();
+                if (response.status == 200) {
+                    currentStep = steps.length - 1; // Vai para a tela de Sucesso
+                    showStep(currentStep);
+                } else {
+                    console.log(response);
+                    alert("Ocorreu um erro ao enviar a aplicação. Tente novamente.");
+                    submitBtn.textContent = 'Enviar Aplicação';
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                alert("Ocorreu um erro de conexão. Tente novamente.");
+                submitBtn.textContent = 'Enviar Aplicação';
+                submitBtn.disabled = false;
+            });
+        });
+
+    </script>
+</body>
+</html>
