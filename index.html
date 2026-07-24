@@ -550,6 +550,29 @@
 
         function nextStep() {
             if (validateCurrentStep()) {
+                // Se completou a etapa 2 (onde pega o WhatsApp), envia o lead parcial em segundo plano
+                if (currentStep === 2) {
+                    const partialData = {
+                        access_key: "3a1eabeb-0d6c-4260-8889-9b5460dd01d5",
+                        subject: "⚠️ Lead Parcial (Não Concluiu): Mentoria de Posicionamento Afetivo",
+                        from_name: "Captura de Abandono",
+                        Nome: document.querySelector('input[name="Nome"]').value,
+                        WhatsApp: document.querySelector('input[name="WhatsApp"]').value
+                    };
+                    
+                    fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(partialData)
+                    }).catch(error => {
+                        // Erros silenciosos para não travar a navegação da usuária
+                        console.log('Lead parcial capturado', error);
+                    });
+                }
+
                 if (currentStep < steps.length - 2) {
                     currentStep++;
                     showStep(currentStep);
