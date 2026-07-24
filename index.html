@@ -124,6 +124,9 @@
             display: flex;
             align-items: baseline;
             gap: 10px;
+            margin-bottom: 1.8rem; /* Aumenta o espaço livre abaixo da pergunta */
+            padding-bottom: 1rem;  /* Cria respiro para a linha */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15); /* Adiciona uma linha divisória sutil e sofisticada */
         }
 
         .question-number {
@@ -345,7 +348,7 @@
 
             <!-- Step 2: WhatsApp -->
             <div class="step" id="step-2">
-                <h2><span class="question-number">2 &rarr;</span> Qual é o seu WhatsApp para contato?</h2>
+                <h2><span class="question-number">2 </span> Qual é o seu WhatsApp para contato?</h2>
                 <p class="subtitle">Nossa equipe entrará em contato por este número em caso de aprovação.</p>
                 <input type="tel" name="WhatsApp" placeholder="(00) 00000-0000" required>
                 <div class="error-message">Por favor, insira um número válido.</div>
@@ -357,7 +360,7 @@
 
             <!-- Step 3: Gargalo -->
             <div class="step" id="step-3">
-                <h2><span class="question-number">3 &rarr;</span> Qual é o seu principal gargalo atual na sua vida amorosa ou nas suas relações?</h2>
+                <h2><span class="question-number">3 </span> Qual é o seu principal gargalo atual na sua vida amorosa ou nas suas relações?</h2>
                 <div class="options-container" data-name="Principal_Gargalo">
                     <label class="radio-option">
                         <input type="radio" name="Principal_Gargalo" value="Repetição de padrões com parceiros emocionalmente indisponíveis." required>
@@ -365,7 +368,7 @@
                     </label>
                     <label class="radio-option">
                         <input type="radio" name="Principal_Gargalo" value="Dificuldade de me posicionar e ser priorizada (acabo aceitando pouco).">
-                        Dificuldade de me posicionar e ser priorizada (acabo aceitando pouco).
+                        Dificuldade de me posicionar e ser priorizada.
                     </label>
                     <label class="radio-option">
                         <input type="radio" name="Principal_Gargalo" value="Insegurança e ansiedade quando começo a me envolver com alguém.">
@@ -392,7 +395,7 @@
 
             <!-- Step 4: Tentativas -->
             <div class="step" id="step-4">
-                <h2><span class="question-number">4 &rarr;</span> O que você já tentou fazer para resolver isso até hoje e por que falhou?</h2>
+                <h2><span class="question-number">4 </span> O que você já tentou fazer para resolver isso até hoje e por que falhou?</h2>
                 <textarea name="Tentativas_Anteriores" placeholder="Descreva brevemente..." required></textarea>
                 <div class="error-message">Por favor, preencha este campo.</div>
                 <div class="btn-container">
@@ -403,7 +406,7 @@
 
             <!-- Step 5: Urgência -->
             <div class="step" id="step-5">
-                <h2><span class="question-number">5 &rarr;</span> Em uma escala de 1 a 10, qual é o seu nível de urgência e compromisso para resolver essa questão nos próximos 30 dias?</h2>
+                <h2><span class="question-number">5 </span> Em uma escala de 1 a 10, qual é o seu nível de urgência e compromisso para resolver essa questão nos próximos 30 dias?</h2>
                 <div class="scale-container" data-name="Nivel_Urgencia_Compromisso">
                     <script>
                         for(let i=1; i<=10; i++) {
@@ -424,7 +427,7 @@
 
             <!-- Step 6: Investimento -->
             <div class="step" id="step-6">
-                <h2><span class="question-number">6 &rarr;</span> Você compreende que um processo de reestruturação de posicionamento e alto valor exige investimento financeiro e dedicação pessoal de tempo?</h2>
+                <h2><span class="question-number">6 </span> Você compreende que um processo de reestruturação de posicionamento e alto valor exige investimento financeiro e dedicação pessoal de tempo?</h2>
                 <div class="options-container" data-name="Compreensao_Investimento">
                     <label class="radio-option">
                         <input type="radio" name="Compreensao_Investimento" value="Sim, estou disposta para investir em mim." required>
@@ -443,7 +446,7 @@
 
             <!-- Step 7: Renda -->
             <div class="step" id="step-7">
-                <h2><span class="question-number">7 &rarr;</span> Qual é a sua faixa de renda mensal atual ou capacidade de investimento para o seu desenvolvimento pessoal e estratégico?</h2>
+                <h2><span class="question-number">7 </span> Qual é a sua faixa de renda mensal atual ou capacidade de investimento para o seu desenvolvimento pessoal?</h2>
                 <div class="options-container" data-name="Faixa_de_Renda">
                     <label class="radio-option">
                         <input type="radio" name="Faixa_de_Renda" value="Menos de R$ 5.000 / mês" required>
@@ -470,7 +473,7 @@
 
             <!-- Step 8: Por que você? -->
             <div class="step" id="step-8">
-                <h2><span class="question-number">8 &rarr;</span> Por que você acredita que deve ser aceita para ser acompanhada diretamente por mim nesta mentoria?</h2>
+                <h2><span class="question-number">8 </span> Por que você acredita que deve ser aceita para ser acompanhada diretamente por mim nesta mentoria?</h2>
                 <textarea name="Motivo_Aceitacao" placeholder="Escreva sua resposta com sinceridade..." required></textarea>
                 <div class="error-message">Por favor, preencha este campo.</div>
                 <div class="btn-container">
